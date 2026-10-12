@@ -10,7 +10,7 @@
 #define MAX_LINE_LENGTH 256
 
 int search_count(char *filename, char *target) {
-   
+    
 }
 
 struct count_result search_instance(char *filename,char *target){

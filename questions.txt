@@ -1,0 +1,1 @@
+(1) The time command out is real:0m0.019s ,user: 0m0.008s and sys:0m0.004s. This shows that the total time taken to complete the command is 0.019s, with 0.008s of CPU time in user mode (cpu time spend executing the code) and 0.004s spent in kernel or system mode (file i/o operations, system calls etc). 

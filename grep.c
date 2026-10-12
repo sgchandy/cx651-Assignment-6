@@ -15,5 +15,28 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    char *mode = argv[1];
+    char *filepath = argv[2];
+    char *target_word = argv[3];
+
+    if (strcmp(mode, "count") == 0) {
+        int count = search_count(filepath, target_word);
+        printf("%d\n", count);
+    } else if (strcmp(mode, "instance") == 0) {
+        struct count_result result = search_instance(filepath, target_word);
+        printf("Found: %d of %s in %s\n", result.count, target_word, filepath);
+        for (int i = 0; i < result.count; i++) {
+            printf("res.instances[%d]:%s\n", i, result.instances[i]);
+            free(result.instances[i]);
+        }
+        free(result.instances);
+    } else if(strcmp(mode, "parallel") == 0) {
+        // Implement parallel search logic here if needed
+    }
+
+     else {
+        fprintf(stderr, "Unknown mode: %s\n", mode);
+        return 1;
+    }
     return 0;
 }
