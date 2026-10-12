@@ -1,6 +1,7 @@
 #include "engine.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main(int argc, char** argv) {
     // TODO: parse the arguments in argv.
@@ -26,12 +27,10 @@ int main(int argc, char** argv) {
         struct count_result result = search_instance(filepath, target_word);
         printf("Found: %d of %s in %s\n", result.count, target_word, filepath);
         for (int i = 0; i < result.count; i++) {
-            printf("res.instances[%d]:%s\n", i, result.instances[i]);
+            printf("res.instances[%d]: %s\n", i, result.instances[i]);
             free(result.instances[i]);
         }
         free(result.instances);
-    } else if(strcmp(mode, "parallel") == 0) {
-        // Implement parallel search logic here if needed
     }
 
      else {

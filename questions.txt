@@ -1,1 +1,3 @@
 (1) The time command out is real:0m0.019s ,user: 0m0.008s and sys:0m0.004s. This shows that the total time taken to complete the command is 0.019s, with 0.008s of CPU time in user mode (cpu time spend executing the code) and 0.004s spent in kernel or system mode (file i/o operations, system calls etc). 
+(2) I avoided data races by giving each worker its own argument structure, counter, and instance array. Each worker opens its own read-only file handle and updates only its own results. The main thread uses pthread_join to ensure all workers have finished before accessing their results. It then merges the instance arrays in file order. Since the workers do not modify shared data, no mutex or shared global variables are needed.
+(3)
