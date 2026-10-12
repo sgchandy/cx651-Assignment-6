@@ -33,27 +33,51 @@ struct count_result search_instance(char *filename,char *target){
     struct count_result result;
     result.count = 0;
     result.instances = NULL;
-    
+
+    if (!target || *target == '\0') {
+        return result;
+    }
+
     FILE *file = fopen(filename, "r");
     if (!file) {
         return result;
     }
     char line[MAX_LINE_LENGTH];
+    int slots = 0;
     while (fgets(line, sizeof(line), file)) {
-        if (strstr(line, target)) {
-            result.count++;
-            result.instances = realloc(result.instances, result.count * sizeof(char *));
-            // stripping whitespace from the line before storing it
-            char *start = line;
-            while (isspace((unsigned char)*start)) start++;
-            char *end = line + strlen(line) - 1;
-            while (end > start && isspace((unsigned char)*end)) end--;
-            *(end + 1) = '\0';
-            if (start != line) {
-                memmove(line, start, end - start + 2);
+        char *match = line;
+        int matches = 0;
+        while ((match = strstr(match, target)) != NULL) {
+            matches++;
+            match += strlen(target);
+        }
+        if (matches == 0) continue;
+
+        char *start = line;
+        while (isspace((unsigned char)*start)) start++;
+        char *end = line + strlen(line);
+        while (end > start && isspace((unsigned char)end[-1])) end--;
+        *end = '\0';
+        if (start != line) {
+            memmove(line, start, end - start + 1);
+        }
+
+        for (int i = 0; i < matches; i++) {
+            if (result.count == slots) {
+                slots = slots ? slots * 2 : 16;
+                char **grown = realloc(result.instances, slots * sizeof(*grown));
+                if (!grown) {
+                    perror("realloc");
+                    exit(EXIT_FAILURE);
+                }
+                result.instances = grown;
             }
-            // store the stripped line
-            result.instances[result.count - 1] = strdup(line);
+            result.instances[result.count] = strdup(line);
+            if (!result.instances[result.count]) {
+                perror("strdup");
+                exit(EXIT_FAILURE);
+            }
+            result.count++;
         }
     }
     fclose(file);
